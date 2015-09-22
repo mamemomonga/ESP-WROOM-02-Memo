@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>ESP8266</title>
+<meta name="viewport" content="width=device-width">
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.4.min.js"></script>
+
+<script>
+'use strict';
+var ESP8266Demo=function(){
+	var t=this;
+	t.baseurl= '';
+};
+ESP8266Demo.prototype={
+  // 開始
+	start: function() {
+		var t=this;
+		$('.btn1').on('click',function() {
+      // ボタンが押されたときの処理
+			var j=$(this);
+			var bn=j.attr('id').substr(3);
+	    $.getJSON( t.baseurl+'/'+bn,function(json) { t.set_button_color(json.led_value) });
+  	});
+		t.led_state();	
+    // 5秒ごとに状態を取得
+		setInterval(function(){t.led_state()},5000);
+	},
+  // LEDの状態を取得
+	led_state: function() {
+		var t=this;
+	  $.getJSON( t.baseurl+'/led',function(json) { t.set_button_color(json.led_value) });
+	},
+  // ボタンの色
+	set_button_color: function(led_value) {
+		var t=this;
+		for(var i=0;i<8;i++) {
+			var color='#FFFFFF';
+			if(1 & (led_value >> i)){ color='#00FF00'; }
+			$('#btn'+(i+1)).css('background-color',color);
+		}
+	}
+};
+
+var esp8266demo=new ESP8266Demo();
+$(function() { esp8266demo.start(); });
+</script> 
+
+<style>
+.btn1 {
+	font-size: 16px;
+  margin:  5px;
+	padding: 10px;
+	width:  10px;
+	height: 10px;
+	line-height: 10px;
+	text-align: center;
+	border: 2px solid #000000;
+	background-color: #FFFFFF;
+	color: #000000;
+  border-radius: 5px;
+  float: left;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: pointer;
+}
+.btn1:hover {
+  background-color: #EEEEEE;
+}
+</style>
+
+</head>
+<body>
+<div class="btn1" id="btn8">8</div>
+<div class="btn1" id="btn7">7</div>
+<div class="btn1" id="btn6">6</div>
+<div class="btn1" id="btn5">5</div>
+<div class="btn1" id="btn4">4</div>
+<div class="btn1" id="btn3">3</div>
+<div class="btn1" id="btn2">2</div>
+<div class="btn1" id="btn1">1</div>
+<div class="btn1" id="btn0"> </div>
+<div style="clear:both"></div>
+</body>
+</html>
+
